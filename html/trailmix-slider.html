@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Gary's Slider</title>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/tabletop.js"></script>
+    <script src="../js/newsquiz.min.js"></script>
+
+    <link href="../css/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+        
+    <!-- bootstrap.min.css is the barebones; bootstrap-responsive.css makes the quiz device-friendly -->      
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+        
+    <!-- Custom stylesheet. Use this or create your own -->
+    <link href="../css/style.css" rel="stylesheet" media="screen">
+    <link href="../css/my.css" type="text/css" rel="stylesheet">
+
+
+</head>
+<body style="padding: 0; margin: 0; font-family: Arial, Verdana; background-color: #fff;">
+    
+    <!-- use jssor.slider.mini.js (40KB) or jssor.sliderc.mini.js (32KB, with caption, no slideshow) or jssor.sliders.mini.js (28KB, no caption, no slideshow) instead for release -->
+    <!-- jssor.slider.mini.js = jssor.sliderc.mini.js = jssor.sliders.mini.js = (jssor.core.js + jssor.utils.js + jssor.slider.js) -->
+    <script type="text/javascript" src="../js/jssor.core.js"></script>
+    <script type="text/javascript" src="../js/jssor.utils.js"></script>
+    <script type="text/javascript" src="../js/jssor.slider.js"></script>
+    
+    <script>
+        jQuery(document).ready(function ($) {
+            var options = {
+                $AutoPlay: false,                                   //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
+                $AutoPlayInterval: 4000,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
+                $PauseOnHover: 1,                                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, 4 freeze for desktop, 8 freeze for touch device, 12 freeze for desktop and touch device, default value is 1
+
+                $ArrowKeyNavigation: true,   			    //[Optional] Allows keyboard (arrow key) navigation or not, default value is false
+                $SlideDuration: 800,                                //[Optional] Specifies default duration (swipe) for slide in milliseconds, default value is 500
+                $MinDragOffsetToSlide: 20,                          //[Optional] Minimum drag offset to trigger slide , default value is 20
+                //$SlideWidth: 600,                                 //[Optional] Width of every slide in pixels, default value is width of 'slides' container
+                //$SlideHeight: 300,                                //[Optional] Height of every slide in pixels, default value is height of 'slides' container
+                $SlideSpacing: 0, 			            //[Optional] Space between each slide in pixels, default value is 0
+                $DisplayPieces: 1,                                  //[Optional] Number of pieces to display (the slideshow would be disabled if the value is set to greater than 1), the default value is 1
+                $ParkingPosition: 0,                                //[Optional] The offset position to park slide (this options applys only when slideshow disabled), default value is 0.
+                $UISearchMode: 1,                                   //[Optional] The way (0 parellel, 1 recursive, default value is 1) to search UI components (slides container, loading screen, navigator container, arrow navigator container, thumbnail navigator container etc).
+                $PlayOrientation: 1,                                //[Optional] Orientation to play slide (for auto play, navigation), 1 horizental, 2 vertical, 5 horizental reverse, 6 vertical reverse, default value is 1
+                $DragOrientation: 1,                                //[Optional] Orientation to drag slide, 0 no drag, 1 horizental, 2 vertical, 3 either, default value is 1 (Note that the $DragOrientation should be the same as $PlayOrientation when $DisplayPieces is greater than 1, or parking position is not 0)
+
+                $ArrowNavigatorOptions: {                           //[Optional] Options to specify and enable arrow navigator or not
+                    $Class: $JssorArrowNavigator$,                  //[Requried] Class to create arrow navigator instance
+                    $ChanceToShow: 1,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+                    $AutoCenter: 2,                                 //[Optional] Auto center arrows in parent container, 0 No, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+                    $Steps: 1                                       //[Optional] Steps to go for each navigation request, default value is 1
+                },
+
+                $ThumbnailNavigatorOptions: {
+                    $Class: $JssorThumbnailNavigator$,              //[Required] Class to create thumbnail navigator instance
+                    $ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+
+                    $ActionMode: 1,                                 //[Optional] 0 None, 1 act by click, 2 act by mouse hover, 3 both, default value is 1
+                    $AutoCenter: 0,                                 //[Optional] Auto center thumbnail items in the thumbnail navigator container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 3
+                    $Lanes: 1,                                      //[Optional] Specify lanes to arrange thumbnails, default value is 1
+                    $SpacingX: 3,                                   //[Optional] Horizontal space between each thumbnail in pixel, default value is 0
+                    $SpacingY: 3,                                   //[Optional] Vertical space between each thumbnail in pixel, default value is 0
+                    $DisplayPieces: 9,                              //[Optional] Number of pieces to display, default value is 1
+                    $ParkingPosition: 260,                          //[Optional] The offset position to park thumbnail
+                    $Orientation: 1,                                //[Optional] Orientation to arrange thumbnails, 1 horizental, 2 vertical, default value is 1
+                    $DisableDrag: false                             //[Optional] Disable drag or not, default value is false
+                }
+            };
+
+            var jssor_slider1 = new $JssorSlider$("slider1_container", options);
+
+            //responsive code begin
+            //you can remove responsive code if you don't want the slider scales while window resizes
+            function ScaleSlider() {
+                var bodyWidth = document.body.clientWidth;
+                if (bodyWidth)
+                    jssor_slider1.$SetScaleWidth(Math.min(bodyWidth, 1200));
+                else
+                    window.setTimeout(ScaleSlider, 30);
+            }
+
+            ScaleSlider();
+
+            if (!navigator.userAgent.match(/(iPhone|iPod|iPad|BlackBerry|IEMobile)/)) {
+                $(window).bind('resize', ScaleSlider);
+            }
+
+
+            //if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
+            //    $(window).bind("orientationchange", ScaleSlider);
+            //}
+            //responsive code end
+        });
+    </script>
+    
+    <div class="container1">
+        <div class="container2">
+            <!-- Jssor Slider Begin -->
+            <div id="slider1_container" class="slider-begin">
+                <!-- Loading Screen -->
+                <div u="loading" class="loading-screen">
+                    <div class="container3"></div>
+                    <div class="container4"></div>
+                </div>
+                <!-- Slides Container -->
+                <div u="slides" class="slides-container">
+                    <div>
+                        <div class="left-container">
+                            <img class="logo" src="../images/logo1.png"/>
+                                <h4 class="welcome">
+                                They say the way to a man's heart is through his stomach. I say the way to shake off the stress of the day-to-day grind is dining with Mother Nature.
+                                Disconnecting from the "Real World" can be both relaxing and rewarding.
+                                A simple day hike and a lunch beside a mountain stream can be all it takes to find peace.
+                                But why stop there? Sleeping under the stars and dining by the fire can provide an even deeper, longer lasting reboot from reality.
+                                </h4>
+                        </div>
+                        <img class="image" src="../images/open.png"/>
+                        <img u="thumb" src="../images/open.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">misconceptions</span>
+                            <span class="left-info">For people new to overnight backpacking there is a misconception related to food.
+                                Many people believe that you are forced to live off things like G.O.R.P, beef jerky & freeze dried meals.
+                                While these are staples in the backpacking community and can be quite delicious, you are not confined to these alone.
+                            </span>
+                                <span class="instruction">Hover over the images for more information.</span>
+                        </div>
+                        <img class="image" src="../images/wood.png"/>
+                        <img class="trailmix" src="../images/trailmix.png"/>
+                        <img class="jerky" src="../images/jerky.png"/>
+                        <img class="mtnhouse" src="../images/mtnhouse.png"/>
+                        <img u="thumb" src="../images/gorp.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">The Truth</span>
+                            <span class="left-info">While you may not have the luxury of a full kitchen and pantry to prepare your meals,
+                                with a little planning and preparation you can dine like wilderness royalty.
+                                Don't think about what you can't do, think about what you can do and how to do it.
+                            </span>
+                            <span class="instruction">Hover over the image for this yummy recipe.</span>
+                        </div>
+                        <a class="salmon"><img class="image" src="../images/salmon.png"/></a>
+                        <img u="thumb" src="../images/salmon.png" />
+                    </div>
+                    <!-- <div>
+                        <div class="left-container">
+                            <span class="heading">Short Hikes = </br>Big Rewards</span>
+                            <span class="left-info">A 1-2 night hike can be more rewarding than you think.
+                                You'll learn basic skills but have more time to enjoy yourself!
+                                Remember, getting out and exploring nature is supposed to be relaxing.
+                            </span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" id="view" src="../images/long-point.png"/>
+                        <img u="thumb" src="../images/long-point.png" />
+                    </div> -->
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Meal planning</span>
+                            <span class="left-info">With a little planning the sky is the limit.
+                                </br>Answer these three simple questions and you will be well on your way to a successful outdoor adventure.
+                                These are simple questions. But they will inspire you to think about the whole of the dining experience.
+                            </span>
+                        </div>
+                            <span class="instruction">Hover over the questions for more information.</span>
+                        
+                        <img class="image" src="../images/clouds.png"/>
+                        <img u="thumb" src="../images/clouds.png" />
+                        <div>
+                            <span class="image">
+                                <ul class="meal-questions">
+                                    <li id="q1">How long is your trip?</li>
+                                    <li id="q2">How will you cook your meal?</li>
+                                    <li id="q3">What is you access to fresh water?</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">the basics</span>
+                            <span class="left-info">Regardless of the location & duration of a hike there are certain basics you will need.
+                            Having these essentail camp kitchen items on hand provides you the flexibility needed to prepare any meal no matter how simple or complex.</span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" src="../images/basics-bg.png"/>
+                        <img id="foil" class="foil" src="../images/basics-foil.png"/>
+                        <img id="utensils" class="utensils" src="../images/basics-utensils.png"/>
+                        <img id="cups" class="cups" src="../images/basics-cups.png"/>
+                        <img id= "stove" class="stove" src="../images/basics-stove.png"/>
+                        <img id="pans" class="pans" src="../images/basics-pans.png"/>
+                        <img id="wipes" class="wipes" src="../images/basics-wipes.png"/>
+                        <img id="pot" class="pot" src="../images/basics-pot.png"/>
+                        <img id="plates" class="plates" src="../images/basics-plates.png"/>
+                        
+                        <img u="thumb" src="../images/basics.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Breakfast </span>
+                            <span class="left-info">Breakfast can be kept simple with something like oatmeal.
+                                However, consider stepping up the most important meal of the day with some of these great ideas.</span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" id="breakfast" src="../images/breakfast.png"/>
+                        <img u="thumb" src="../images/breakfast.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Lunch</span>
+                            <span class="left-info">Midday activites shouldn't mean grabbing some jerky or a granola bar.
+                                Having a delicious lunch in the field can provide the fuel you need to go that extra mile.</span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" id="lunch" src="../images/fondue.png"/>
+                        <img u="thumb" src="../images/fondue.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Dinner</span>
+                            <span class="left-info">At the end of a long day on the trail you want to refuel your body.
+                                While the world of freeze dried meals has come a long way, consider tossing the sodium laden bag of rocks for something more flavorful.
+                            </span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" id="dinner" src="../images/shrimp.png"/>
+                        <img u="thumb" src="../images/shrimp.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Dessert</span>
+                            <span class="left-info">We've all enjoyed the delicousness that is a s'more, but it doesn't have to stop there! Thinking outside the box can take your game to the next level!</span>
+                            <span class="instruction">Hover over the image for more information.</span>
+                        </div>
+                        <img class="image" id="dessert" src="../images/cheesecake.png"/>
+                        <img u="thumb" src="../images/cheesecake.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Plan Around Activities</span>
+                            <span class="left-info">Typically a backpacking trip involves more activities than just eating so plan your meals around your activities.
+                            At the top of your list should be "Having Fun"!
+                            </span>
+                        </div>
+                        <img class="image" src="../images/fish.png"/>
+                        <img u="thumb" src="../images/fish.png" />
+                    </div>
+                    <div>
+                        <div class="left-container">
+                            <span class="heading">Take The Quiz</span>
+                            <span class="left-info">By now you're tummy is grumbling for some yummy outdoor grub & you've picked up some info along the way. Let's see what you've learned!</span>
+                        </div>
+                        <div class="questions" id="quiz_container"></div>
+                        <img u="thumb" src="../images/dasies.png"/>
+                    </div>
+                </div>
+            <!-- Arrow Navigator Skin Begin -->
+            <style>
+            /* jssor slider arrow navigator skin 21 css */
+            /*
+            .jssora21l              (normal)
+            .jssora21r              (normal)
+            .jssora21l:hover        (normal mouseover)
+            .jssora21r:hover        (normal mouseover)
+            .jssora21ldn            (mousedown)
+            .jssora21rdn            (mousedown)
+            */
+            .jssora21l, .jssora21r, .jssora21ldn, .jssora21rdn
+            {
+            	position: absolute;
+            	cursor: pointer;
+            	display: block;
+                background: url(../img/a21.png) center center no-repeat;
+                overflow: hidden;
+            }
+            .jssora21l { background-position: -3px -33px; }
+            .jssora21r { background-position: -63px -33px; }
+            .jssora21l:hover { background-position: -123px -33px; }
+            .jssora21r:hover { background-position: -183px -33px; }
+            .jssora21ldn { background-position: -243px -33px; }
+            .jssora21rdn { background-position: -303px -33px; }
+        </style>
+        <!-- Arrow Left -->
+        <span u="arrowleft" class="jssora21l" style="width: 55px; height: 55px; top: 123px; left: 8px;">
+        </span>
+        <!-- Arrow Right -->
+        <span u="arrowright" class="jssora21r" style="width: 55px; height: 55px; top: 123px; right: 8px">
+        </span>
+                <!-- Arrow Navigator Skin End -->
+                <!-- ThumbnailNavigator Skin Begin -->
+                <div u="thumbnavigator" class="jssort04" style="position: absolute; width: 600px;
+                    height: 60px; right: 110px; bottom: 0px;">
+                    <!-- Thumbnail Item Skin Begin -->
+                    <style>
+                        /* jssor slider thumbnail navigator skin 04 css */
+                        /*
+                        .jssort04 .p            (normal)
+                        .jssort04 .p:hover      (normal mouseover)
+                        .jssort04 .pav          (active)
+                        .jssort04 .pav:hover    (active mouseover)
+                        .jssort04 .pdn          (mousedown)
+                        */
+                        .jssort04 .w, .jssort04 .pav:hover .w
+                        {
+                            position: absolute;
+                            width: 60px;
+                            height: 30px;
+                            border: #0099FF 1px solid;
+                        }
+                        * html .jssort04 .w
+                        {
+                            width: /**/ 62px;
+                            height: /**/ 32px;
+                        }
+                        .jssort04 .pdn .w, .jssort04 .pav .w
+                        {
+                            border-style: solid;
+                        }
+                        .jssort04 .c
+                        {
+                            width: 62px;
+                            height: 32px;
+                            filter: alpha(opacity=45);
+                            opacity: .45;
+                            transition: opacity .6s;
+                            -moz-transition: opacity .6s;
+                            -webkit-transition: opacity .6s;
+                            -o-transition: opacity .6s;
+                        }
+                        .jssort04 .p:hover .c, .jssort04 .pav .c
+                        {
+                            filter: alpha(opacity=0);
+                            opacity: 0;
+                        }
+                        .jssort04 .p:hover .c
+                        {
+                            transition: none;
+                            -moz-transition: none;
+                            -webkit-transition: none;
+                            -o-transition: none;
+                        }
+                    </style>
+                    <div u="slides" style="bottom: 25px; right: 55px;">
+                        <div u="prototype" class="p" style="position: absolute; width: 62px; height: 32px; top: 0; left: 0;">
+                            <div class="w">
+                                <thumbnailtemplate style="width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0;"></thumbnailtemplate>
+                            </div>
+                            <div class="c" style="position: absolute; background-color: #000; top: 0; left: 0">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Thumbnail Item Skin End -->
+                </div>
+                <!-- ThumbnailNavigator Skin End -->
+                <a style="display: none" href="http://www.jssor.com">responsive carousel</a>
+            </div>
+            <!-- Jssor Slider End -->
+        </div>
+    </div>
+<script type="text/javascript" src=../js/jquery.qtip.min.js></script>
+<script type="text/javascript" src=../js/imagesloaded.pkgd.js></script>
+<script type="text/javascript" src=../js/my.js></script>
+</body>
+</html>
